@@ -29,7 +29,11 @@ class AuthController {
     try {
       const { email, password, userName } = req.body;
       const data = await authService.register(email, password, userName);
-      AuthController.setCookie(res, data.refreshToken);
+      // AuthController.setCookie(res, data.refreshToken);
+      res.cookie("refreshToken", token, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 kun
+      });
       return res.json(data);
     } catch (error) {
       next(error);

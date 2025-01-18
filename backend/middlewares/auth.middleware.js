@@ -12,7 +12,7 @@ export default function (req, res, next) {
     if (!accessToken) {
       return next(BaseError.UnauthorizedError());
     }
-    const userData = tokenService.validateAccsessToken(accessToken);
+    const userData = tokenService.validateAccessToken(accessToken);
     if (!userData) {
       return next(BaseError.UnauthorizedError());
     }

@@ -27,7 +27,7 @@ $api.interceptors.response.use(
       } catch (error) {
         console.log("not authorized");
       }
-    }
+    } 
     return Promise.reject(error);
   }
 );
