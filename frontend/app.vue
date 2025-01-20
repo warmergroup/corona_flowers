@@ -30,9 +30,12 @@
     }
   });
 </script>
-  <template>
+
+ <template>
+  <div class="container mx-auto">
     <NuxtLayout>
       <NuxtPage />
+      <UNotifications />
     </NuxtLayout>
-    <UNotifications />
-  </template>
+  </div>
+</template>

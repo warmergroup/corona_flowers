@@ -20,10 +20,6 @@ const products = computed(() => productStore.products);
 </script>
 
 <template>
-    
-</template>
-
-<!-- <template>
     <div class="container mx-auto">
         <div class="container mx-auto w-1/2">
             <UAlert v-if="error" class="mx-auto" title="Xatolik yuz berdi"
@@ -63,4 +59,4 @@ const products = computed(() => productStore.products);
         opacity: 1;
     }
 }
-</style> -->
+</style>

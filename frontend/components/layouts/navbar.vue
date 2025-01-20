@@ -5,7 +5,7 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <div class="w-full h-[12vh] dark:bg-gray-600 bg-gray-200 fixed inset-0 z-50">
+  <div class="w-full h-16 dark:bg-gray-600 bg-gray-200 fixed top-0 inset-0 z-50">
     <div class="w-full h-full flex justify-between items-center p-2 container mx-auto">
       <NuxtLink to="/" class="flex items-center justify-center gap-2">
         <div class="rounded-full overflow-hidden w-16 h-16 my-2 relative">
@@ -19,7 +19,6 @@ const authStore = useAuthStore();
       <div class="flex items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center justify-between gap-3">
           <SharedCreateButton />
-          <SharedColorMode />
 
           <template v-if="authStore.isLoading">
             <div class="flex justify-center items-center rounded-full">
@@ -33,6 +32,7 @@ const authStore = useAuthStore();
               <UButton label="Login" class="rounded-full font-bold" size="lg" color="blue" variant="soft" />
             </NuxtLink>
           </template>
+          <SharedColorMode />
         </div>
       </div>
     </div>
