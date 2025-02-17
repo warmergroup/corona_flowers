@@ -13,7 +13,7 @@ const toggleDarkMode = () => {
 </script>
 
 <template>
-  <UButton :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'" color="gray" size="lg"
-    variant="ghost" aria-label="Theme" @click="toggleDarkMode"
-    class="bg-gray-700 text-white border border-gray-500 hover:bg-gray-400" />
+  <UButton :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'" color="gray" size="sm"
+           variant="ghost" aria-label="Theme" @click="toggleDarkMode"
+           class="transition-all duration-500 bg-gray-500 text-white border border-gray-500 hover:bg-gray-400  hover:text-white"/>
 </template>

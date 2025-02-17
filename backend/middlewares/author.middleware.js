@@ -7,7 +7,7 @@ export default async function (req, res, next) {
     const authorId = req.user.id;
     if (product.author.toString() !== authorId) {
       return next(
-        BaseError.BadRequestError("Faqatgina post egasi o'zgartirishi mumkin.")
+        BaseError.BadRequestError("Faqat muallif o'zgartira olishi mumkin")
       );
     }
     next();
@@ -15,3 +15,4 @@ export default async function (req, res, next) {
     return next(BaseError.BadRequestError("Only author can edit this product"));
   }
 }
+

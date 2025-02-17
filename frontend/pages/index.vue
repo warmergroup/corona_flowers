@@ -1,66 +1,57 @@
-<script lang="ts" setup>
-import { useQuery } from '@tanstack/vue-query';
-import { useProductStore } from '~/store/product.store';
-import $axios from '~/http';
+<script setup lang="ts">
+import {useGetProductStatistics} from '~/query/product/getProductStatistics';
+import {useGetCategoryStatistics} from '~/query/category/getCategoryStatistics';
+import {useGetImageStatistics} from '~/query/images/getImagesStatistiks';
 
-useHead({ title: 'Bosh sahifa | Corona Flowers' });
 
-const productStore = useProductStore();
+useHead({title: 'Dashboard | Admin Panel'});
 
-const { isLoading, error } = useQuery({
-    queryKey: ['get-product'],
-    queryFn: async () => {
-        const { data } = await $axios.get('product/get');
-        productStore.setProducts(data);
-        return data;
-    },
-});
-
-const products = computed(() => productStore.products);
+const statistics = ref([
+  {
+    key: 'products',
+    title: 'Mahsulotlar',
+    data: useGetProductStatistics(),
+    style: '#0f0;',
+  },
+  {
+    key: 'categories',
+    title: 'Kategoriyalar',
+    data: useGetCategoryStatistics(),
+    style: '#f00;',
+  },
+  {
+    key: 'images',
+    title: 'Rasmlar',
+    data: useGetImageStatistics(),
+    style: '#0ff;',
+  }
+]);
 </script>
 
 <template>
-    
-</template>
-
-<!-- <template>
-    <div class="container mx-auto">
-        <div class="container mx-auto w-1/2">
-            <UAlert v-if="error" class="mx-auto" title="Xatolik yuz berdi"
-                :description="error?.message || 'Nomaʼlum xatolik yuz berdi'" color="rose" variant="outline"
-                icon="material-symbols:brightness-alert-rounded" :close-button="{
-                    icon: 'i-heroicons-x-mark-20-solid',
-                    color: 'gray',
-                    variant: 'link',
-                    padded: false,
-                }" />
-        </div>
-        <div v-if="isLoading" class="text-center p-4">
-            <SharedProductLoader />
-        </div>
-        <div v-else-if="!products || products.length === 0" class="p-4">
-            <UiNoData />
-        </div>
-        <template v-else>
-            <h1 class="text-center text-2xl font-bold">Mahsulotlar ro'yxati</h1>
-            <UiProductList class="card-animation" v-for="(product, index) in products" :style="{ '--i': index + 1 }"
-                :key="product._id" :product="product" />
-        </template>
+  <div class="container mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-6">Dashboard</h1>
+    <div v-if="statistics.some(stat => stat.data.error)" class="mb-4">
+      <SharedAlert :message="extractErrorMessage(statistics.find(stat => stat.data.error)?.data.error)"/>
     </div>
-    <ModalsDeleteModal />
-    <ModalsEditModal />
+    <div
+      class="card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 overflow-y-auto">
+      <UiStatisticsCard
+        v-for="stat in statistics"
+        :key="stat.key"
+        :title="stat.title"
+        :total="stat.data.data?.total"
+        :lastThreeDays="stat.data.data?.lastThreeDays"
+        :lastTwentyFourHours="stat.data.data?.lastTwentyFourHours"
+        :style="stat.style"
+      />
+      <UiStorageUsage/>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.card-animation {
-    opacity: 0;
-    animation: fade-in 500ms forwards;
-    animation-delay: calc(0.1s * var(--i));
+.card-container {
+  flex-wrap: wrap;
 }
-
-@keyframes fade-in {
-    to {
-        opacity: 1;
-    }
-}
-</style> -->
+</style>

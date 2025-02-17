@@ -1,21 +1,23 @@
-import authService from "../services/auth.service.js";
-import { validationResult } from "express-validator";
 import dotenv from "dotenv";
-import BaseError from "../errors/base.error.js";
+
 dotenv.config();
+import BaseError from "../errors/base.error.js";
+import AuthService from "../services/auth.service.js";
+// import {validationResult} from "express-validator";
+
 const CLIENT_URL = process.env.CLIENT_URL;
 
 class AuthController {
-  static handleValidationErrors(req, next) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(
-        BaseError.BadRequestError("Error with validation", {
-          errors: errors.array(),
-        })
-      );
-    }
-  }
+  // static handleValidationErrors(req, res, next) {
+  //   const errors = validationResult(req);
+  //   if (!errors.isEmpty()) {
+  //     return next(
+  //       BaseError.BadRequestError("Error with validation", {
+  //         errors: errors.array(),
+  //       })
+  //     );
+  //   }
+  // }
 
   static setCookie(res, token) {
     res.cookie("refreshToken", token, {
@@ -25,15 +27,10 @@ class AuthController {
   }
 
   async register(req, res, next) {
-    AuthController.handleValidationErrors(req, next);
     try {
-      const { email, password, userName } = req.body;
-      const data = await authService.register(email, password, userName);
-      // AuthController.setCookie(res, data.refreshToken);
-      res.cookie("refreshToken", token, {
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 kun
-      });
+      const {email, password, userName} = req.body;
+      const data = await AuthService.register(email, password, userName);
+      res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000})
       return res.json(data);
     } catch (error) {
       next(error);
@@ -43,7 +40,7 @@ class AuthController {
   async activation(req, res, next) {
     try {
       const userId = req.params.id;
-      await authService.activation(userId);
+      await AuthService.activation(userId);
       return res.redirect(CLIENT_URL);
     } catch (error) {
       next(error);
@@ -51,11 +48,10 @@ class AuthController {
   }
 
   async login(req, res, next) {
-    AuthController.handleValidationErrors(req, next);
     try {
-      const { email, password } = req.body;
-      const data = await authService.login(email, password);
-      if (data) AuthController.setCookie(res, data.refreshToken);
+      const {email, password} = req.body;
+      const data = await AuthService.login(email, password);
+      res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000})
       return res.json(data);
     } catch (error) {
       next(error);
@@ -64,10 +60,10 @@ class AuthController {
 
   async logout(req, res, next) {
     try {
-      const { refreshToken } = req.cookies;
-      await authService.logout(refreshToken);
+      const {refreshToken} = req.cookies;
+      await AuthService.logout(refreshToken);
       res.clearCookie("refreshToken");
-      return res.status(200).json({ message: "Successfully logged out" });
+      return res.status(200).json({message: "Successfully logged out"});
     } catch (error) {
       next(error);
     }
@@ -75,18 +71,24 @@ class AuthController {
 
   async refresh(req, res, next) {
     try {
-      const { refreshToken } = req.cookies;
-      const data = await authService.refresh(refreshToken);
-      AuthController.setCookie(res, data.refreshToken);
+      const {refreshToken} = req.cookies;
+      if (!refreshToken) throw BaseError.UnauthorizedError("Refresh token not found");
+
+      const data = await AuthService.refresh(refreshToken);
+      res.cookie("refreshToken", data.refreshToken, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 kun
+      });
       return res.json(data);
     } catch (error) {
       next(error);
     }
   }
 
+
   async getUser(req, res, next) {
     try {
-      const data = await authService.getUser();
+      const data = await AuthService.getUser();
       return res.json(data);
     } catch (error) {
       next(error);
@@ -95,8 +97,8 @@ class AuthController {
 
   async forgotPassword(req, res, next) {
     try {
-      await authService.forgotPassword(req.body.email);
-      return res.json({ success: true });
+      await AuthService.forgotPassword(req.body.email);
+      return res.json({success: true});
     } catch (error) {
       next(error);
     }
@@ -104,9 +106,9 @@ class AuthController {
 
   async recoveryAccount(req, res, next) {
     try {
-      const { token, password } = req.body;
-      await authService.recoveryAccount(token, password);
-      return res.json({ success: true });
+      const {token, password} = req.body;
+      await AuthService.recoveryAccount(token, password);
+      return res.json({success: true});
     } catch (error) {
       next(error);
     }

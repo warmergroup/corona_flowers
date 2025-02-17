@@ -1,0 +1,164 @@
+<script setup lang="ts">
+import {useConfirm} from '~/hooks/use-confirm';
+import {useProductStore} from '~/store/product.store';
+import $api from '~/http/api';
+import {useMutation} from '@tanstack/vue-query';
+import type {FormSubmitEvent} from "#ui/types";
+import {extractErrorMessage, validateProduct} from '~/utils/formUtils';
+
+const confirm = useConfirm();
+const productStore = useProductStore();
+const toast = useToast();
+
+const picture = ref<File | null>(null);
+
+const isLocalOpen = computed({
+  get: () => confirm.isOpen && confirm.modalType === "editProduct",
+  set: (value) => (confirm.isOpen = value),
+});
+
+const state = reactive({
+  title: '',
+  description: '',
+  price: 0,
+  size: '',
+  category: '',
+  stock: 0,
+  discount: 0,
+  discountStart: '',
+  discountEnd: '',
+});
+watch(() => confirm.product, (newProduct) => {
+  if (newProduct) {
+    state.title = newProduct.title || '';
+    state.description = newProduct.description || '';
+    state.price = newProduct.price || 0;
+    state.size = newProduct.size || '';
+    state.category = newProduct.category || '';
+    state.stock = newProduct.stock || 0;
+    state.discount = newProduct.discount || 0;
+    state.discountStart = newProduct.discountStart || '';
+    state.discountEnd = newProduct.discountEnd || '';
+  }
+});
+
+const resetForm = () => {
+  state.title = '';
+  state.description = '';
+  state.price = 0;
+  state.size = '';
+  state.category = '';
+  state.stock = 0;
+  state.discount = 0;
+  state.discountStart = '';
+  state.discountEnd = '';
+  picture.value = null;
+};
+
+const onFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files ? target.files[0] : null;
+  picture.value = file as File;
+};
+
+interface FormData {
+  title: string;
+  description: string;
+  price: number;
+  size: string;
+  category: string;
+  stock: number;
+  discount: number;
+  discountStart: string;
+  discountEnd: string;
+}
+
+const {mutate, isPending, error} = useMutation({
+  mutationKey: ["edit-product"],
+  mutationFn: async () => {
+    if (!confirm.product || !confirm.product._id) {
+      throw new Error("Mahsulot topilmadi");
+    }
+    const formData = new FormData();
+    formData.append("title", state.title);
+    formData.append("description", state.description);
+    formData.append("price", state.price.toString());
+    formData.append("size", state.size);
+    formData.append("category", state.category);
+    formData.append("stock", state.stock.toString());
+    formData.append("discount", state.discount.toString());
+    formData.append("discountStart", state.discountStart);
+    formData.append("discountEnd", state.discountEnd);
+    if (picture.value) {
+      formData.append("picture", picture.value);
+    }
+    const {data} = await $api.put(`/product/edit/${confirm.product._id}`, formData);
+    return data;
+  },
+  onSuccess(data) {
+    productStore.updateProduct(data);
+    toast.add({
+      title: "Tahrirlash",
+      description: "Tahrirlash muvaffaqiyatli amalga oshirildi",
+      icon: "material-symbols:edit-rounded",
+    });
+    confirm.onClose();
+  },
+});
+
+const onSubmit = async (event: FormSubmitEvent<FormData>) => {
+  event.preventDefault();
+  mutate();
+};
+</script>
+
+<template>
+  <UModal v-model="isLocalOpen" title="Mahsulotni tahrirlash">
+    <UCard>
+      <h1 class="text-center font-bold text-2xl mt-2 mb-4">Mahsulotni tahrirlash</h1>
+      <div v-if="error">
+        <SharedAlert :message="extractErrorMessage(error)"/>
+      </div>
+      <SharedFormWrapper :validate="validateProduct.bind(null, state)" :state="state" @submit="onSubmit"
+                         buttonLabel="Tahrirlash"
+                         :isPending="isPending">
+        <div class="grid grid-cols-2 gap-2">
+          <UFormGroup label="Maxsulot nomi" name="title">
+            <UInput placeholder="Nomini yozing" v-model="state.title" color="blue" size="lg" :disabled="isPending"/>
+          </UFormGroup>
+          <UFormGroup label="Rasm tanlang" name="picture">
+            <UInput :onchange="onFileChange" type="file" color="blue" size="lg" :disabled="isPending"/>
+          </UFormGroup>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <UFormGroup label="Narxi" name="price">
+            <UInput placeholder="Narxini kiriting" v-model="state.price" type="number" color="blue" size="lg"
+                    :disabled="isPending"/>
+          </UFormGroup>
+          <UFormGroup label="O'lchami" name="size">
+            <UInput placeholder="O'lchamini kiriting" type="text" v-model="state.size" color="blue" size="lg"
+                    :disabled="isPending"/>
+          </UFormGroup>
+          <UFormGroup label="Miqdori" name="stock">
+            <UInput placeholder="Miqdorini kiriting" type="number" v-model="state.stock" color="blue" size="lg"
+                    :disabled="isPending"/>
+          </UFormGroup>
+        </div>
+        <UFormGroup label="Kategoriya" name="category">
+          <UInput placeholder="Katalogni tanlang" v-model="state.category" type="text" color="blue" size="lg"
+                  :disabled="isPending"/>
+        </UFormGroup>
+        <UFormGroup label="Maxsulot tavsifi" name="description">
+          <UTextarea autoresize placeholder="Tavsifini yozing" v-model="state.description" color="blue" size="lg"
+                     :disabled="isPending"/>
+        </UFormGroup>
+        <div class="grid grid-cols-2 gap-2">
+          <UButton class="w-full flex justify-center items-center" icon="material-symbols:edit-rounded"
+                   label="Tahrirlash" type="submit" :loading="isPending" color="blue"/>
+          <UButton class="w-full flex justify-center items-center" icon="material-symbols:cancel" label="Bekor qilish"
+                   color="red" @click="() => { resetForm(); confirm.onClose(); }"/>
+        </div>
+      </SharedFormWrapper>
+    </UCard>
+  </UModal>
+</template>

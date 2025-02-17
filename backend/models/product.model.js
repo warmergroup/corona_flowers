@@ -1,22 +1,21 @@
-import { Schema, model } from "mongoose";
+import {Schema, model} from "mongoose";
+import * as stream from "node:stream";
 
 const productSchema = new Schema(
   {
-    author: { type: Schema.ObjectId, ref: "User" },
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    picture: {
-      url: { type: String, required: true },
-      id: { type: String, required: true },
-    },
-    price: { type: Number, required: true },
-    size: { type: String, required: true },
-    category: { type: String, required: true },
-    stock: { type: Number, default: 0 },
-    discount: { type: Number, default: 0 },
-    discountedPrice: { type: Number },
-    discountStart: { type: Date },
-    discountEnd: { type: Date },
+    author: {type: Schema.ObjectId, ref: "User"},
+    title: {type: String, required: true},
+    description: {type: String, required: true},
+    pictureUrl: {type: String, required: true},
+    price: {type: Number, required: true},
+    size: {type: String, required: true},
+    category: {type: Schema.ObjectId, ref: "Category", required: true}, // Kategoriya ID'si
+    stock: {type: Number, default: 0, required: true},
+    status: {type: Boolean, default: true},
+    discount: {type: Number, default: 0},
+    discountedPrice: {type: Number},
+    discountStart: {type: Date, default: null}, // Majburiy emas
+    discountEnd: {type: Date, default: null}, // Majburiy emas
   },
   {
     timestamps: true,

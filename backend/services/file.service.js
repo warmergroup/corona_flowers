@@ -1,10 +1,13 @@
 import dotenv from "dotenv";
-import { Client, Storage, ID } from "appwrite";
+
+dotenv.config();
+import {Client, Storage, ID} from "appwrite";
 import fs from "fs";
 import path from "path";
 import FormData from "form-data";
 import axios from "axios";
-dotenv.config();
+import BaseError from "../errors/base.error.js";
+
 
 const {
   APPWRITE_ENDPOINT,
@@ -31,7 +34,7 @@ class FileService {
     const uploadsDir = path.join(process.cwd(), "uploads");
 
     if (!fs.existsSync(uploadsDir)) {
-      await fs.promises.mkdir(uploadsDir, { recursive: true });
+      await fs.promises.mkdir(uploadsDir, {recursive: true});
     }
 
     const filePath = path.join(uploadsDir, filename);
@@ -41,7 +44,7 @@ class FileService {
     form.append("fileId", ID.unique());
     form.append("file", fs.createReadStream(filePath));
 
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${APPWRITE_ENDPOINT}/storage/buckets/${APPWRITE_BUCKET_ID}/files`,
       form,
       {
@@ -69,7 +72,7 @@ class FileService {
 
   async delete(fileId) {
     try {
-      const { data } = await axios.delete(
+      const {data} = await axios.delete(
         `${APPWRITE_ENDPOINT}/storage/buckets/${APPWRITE_BUCKET_ID}/files/${fileId}`,
         {
           headers: {
@@ -89,7 +92,7 @@ class FileService {
 
   async getFileView(bucketId, fileId) {
     try {
-      const { href } = await this.storage.getFileView(bucketId, fileId);
+      const {href} = await this.storage.getFileView(bucketId, fileId);
       return href;
     } catch (error) {
       throw new Error("Faylni ko'rishda xatolik: " + error.message);

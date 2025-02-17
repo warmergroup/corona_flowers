@@ -1,17 +1,22 @@
-import { defineStore } from "pinia";
-import type { IProduct } from "~/interfaces";
+import {defineStore} from "pinia";
+import type {IProduct} from "~/interfaces";
 
 export const useProductStore = defineStore("productStore", {
   state: () => ({
     products: [] as IProduct[],
+    product: {} as IProduct,
     isLoading: false,
+
   }),
   actions: {
     setProducts(products: IProduct[]) {
       this.products = products;
     },
+    getProductById(id: string) {
+      return this.products.find((p) => p._id === id);
+    },
     addProduct(product: IProduct) {
-      this.products.push(product);
+      this.products.unshift(product);
     },
     updateProduct(updatedProduct: IProduct) {
       const index = this.products.findIndex(

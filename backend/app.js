@@ -1,13 +1,16 @@
+import dotenv from "dotenv";
+
+dotenv.config();
 import path from "path";
 import express from "express";
 import mongoose from "mongoose";
 import productRouter from "./routes/product.router.js";
 import authRouter from "./routes/auth.router.js";
+import categoryRouter from "./routes/category.router.js";
+import imagesRouter from "./routes/images.router.js";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import cors from "cors";
-dotenv.config();
 
 const app = express();
 const currentDir = path.resolve();
@@ -20,13 +23,15 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(currentDir, "public")));
 app.use(cookieParser());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(path.join(currentDir, "public")));
 
 // routes
 app.use("/api/product", productRouter);
+app.use('/api/images', imagesRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/category", categoryRouter)
 
 app.use(errorMiddleware);
 
@@ -44,6 +49,7 @@ const appStart = async () => {
   } catch (error) {
     console.log("DBga ulanish xatosi: ", error);
   }
+  ``
 };
 
 appStart();

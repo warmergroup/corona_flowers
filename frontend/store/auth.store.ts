@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import type { IUser } from "~/interfaces";
+import {defineStore} from "pinia";
+import type {IUser} from "~/interfaces";
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
@@ -16,6 +16,10 @@ export const useAuthStore = defineStore("authStore", {
     },
     setIsLoading(isLoading: boolean) {
       this.isLoading = isLoading;
+    },
+    clearAuthData() {
+      this.user = {} as IUser;
+      this.isAuth = false;
     },
   },
 });

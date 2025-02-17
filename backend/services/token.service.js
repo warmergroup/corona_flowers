@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
+
+dotenv.config();
 import jwt from "jsonwebtoken";
 import TokenModel from "../models/token.model.js";
-import dotenv from "dotenv";
-dotenv.config();
+
 
 const {
   JWT_ACCESS_SECRET_KEY: ACCESS_KEY,
@@ -10,41 +12,42 @@ const {
 
 class TokenService {
   generateToken(payload) {
-    const accessToken = jwt.sign(payload, ACCESS_KEY, { expiresIn: "15m" });
-    const refreshToken = jwt.sign(payload, REFRESH_KEY, { expiresIn: "30d" });
-    return { accessToken, refreshToken };
+    const accessToken = jwt.sign(payload, ACCESS_KEY, {expiresIn: "15m"});
+    const refreshToken = jwt.sign(payload, REFRESH_KEY, {expiresIn: "30d"});
+    return {accessToken, refreshToken};
   }
 
   async saveToken(userId, refreshToken) {
-    return await TokenModel.findOneAndUpdate(
-      { user: userId },
-      { refreshToken },
-      { new: true, upsert: true }
-    );
+    const existToken = await TokenModel.findOne({user: userId})
+    if (existToken) {
+      existToken.refreshToken = refreshToken
+      return existToken.save()
+    }
+    return await TokenModel.create({user: userId, refreshToken})
   }
 
   async removeToken(refreshToken) {
-    return await TokenModel.findOneAndDelete({ refreshToken });
+    return await TokenModel.findOneAndDelete({refreshToken});
   }
 
   async findToken(refreshToken) {
-    return await TokenModel.findOne({ refreshToken });
+    return await TokenModel.findOne({refreshToken});
   }
 
-  validateToken(token, key) {
+  validateRefreshToken(token) {
     try {
-      return jwt.verify(token, key);
-    } catch {
+      return jwt.verify(token, REFRESH_KEY);
+    } catch (error) {
       return null;
     }
   }
 
-  validateRefreshToken(token) {
-    return this.validateToken(token, REFRESH_KEY);
-  }
-
   validateAccessToken(token) {
-    return this.validateToken(token, ACCESS_KEY);
+    try {
+      return jwt.verify(token, ACCESS_KEY);
+    } catch (error) {
+      return null
+    }
   }
 }
 

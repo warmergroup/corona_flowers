@@ -1,0 +1,61 @@
+import CategoryService from "../services/category.service.js";
+import CategoryModel from "../models/category.model.js";
+import categoryModel from "../models/category.model.js";
+
+class CategoryController {
+  async getAll(req, res, next) {
+    try {
+      const allCategory = await CategoryService.getAll();
+      res.status(200).json(allCategory);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async create(req, res, next) {
+    const {categoryName} = req.body;
+    if (!categoryName) {
+      return res.status(400).json({message: "Ma'lumot kiritilmadi"});
+    }
+    try {
+      console.log("Received request body: ", req.body);
+      const category = await CategoryService.createCategory({categoryName});
+      res.status(200).json(category); // Javobda faqat `category` ni qaytarish
+    } catch (error) {
+      console.error("Error in create method: ", error);
+      next(error);
+    }
+  }
+
+  async deleteCategory(req, res, next) {
+    try {
+      const deletedCategory = await CategoryService.deleteCategory(req.params.id);
+      return res.status(200).json({message: "Katalog o'chirildi", data: deletedCategory});
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async editCategory(req, res, next) {
+    try {
+      const editedCategory = await CategoryService.editCategory(req.body, req.params.id);
+      return res.status(200).json({message: "Katalog o'zgartirildi", data: editedCategory});
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCategoryStatistics(req, res, next) {
+    try {
+      const total = await CategoryModel.countDocuments({})
+      const lastThreeDays = await categoryModel.countDocuments({createdAt: {$gte: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)}})
+      const lastTwentyFourHours = await categoryModel.countDocuments({createdAt: {$gte: new Date(Date.now() - 24 * 60 * 60 * 1000)}})
+      res.status(200).json({total, lastThreeDays, lastTwentyFourHours})
+    } catch (error) {
+      next(error);
+    }
+  }
+
+}
+
+export default new CategoryController();

@@ -13,10 +13,7 @@ class BaseError extends Error {
     return new BaseError(message, 400, details);
   }
 
-  static UnauthorizedError(
-    message = "Avtorizatsiyadan o'tmagansiz!",
-    details = null
-  ) {
+  static UnauthorizedError(message = "Avtorizatsiyadan o'tmagansiz!", details = null) {
     return new BaseError(message, 401, details);
   }
 
