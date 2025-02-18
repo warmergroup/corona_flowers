@@ -9,6 +9,7 @@ const checkAuth = async () => {
   authStore.setIsLoading(true);
   try {
     const {data} = await $axios.get('/auth/refresh');
+    console.log('data: ', data)
     localStorage.setItem('accessToken', data.accessToken);
     authStore.setIsAuth(true);
     authStore.setUser(data.user);
