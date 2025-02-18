@@ -18,8 +18,9 @@ const currentDir = path.resolve();
 // middleware
 app.use(
   cors({
-    credentials: true,
     origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
