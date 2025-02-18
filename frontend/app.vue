@@ -9,10 +9,10 @@ const checkAuth = async () => {
   authStore.setIsLoading(true);
   try {
     const {data} = await $axios.get('/auth/refresh');
-    console.log('data: ', data)
-    localStorage.setItem('accessToken', data.accessToken);
+    console.log('data: ', data.data)
+    localStorage.setItem('accessToken', data.data.accessToken);
     authStore.setIsAuth(true);
-    authStore.setUser(data.user);
+    authStore.setUser(data.data.user);
   } catch (error: any) {
     console.error("Auth check error:", error);
     toast.add({
