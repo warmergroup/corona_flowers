@@ -15,23 +15,26 @@ import cors from "cors";
 const app = express();
 const currentDir = path.resolve();
 
-// middleware
+// CORS Middleware
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(currentDir, "public")));
 
-// routes
+// Routes
 app.use("/api/product", productRouter);
-app.use('/api/images', imagesRouter);
+app.use("/api/images", imagesRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/category", categoryRouter)
+app.use("/api/category", categoryRouter);
 
 app.use(errorMiddleware);
 
@@ -49,7 +52,6 @@ const appStart = async () => {
   } catch (error) {
     console.log("DBga ulanish xatosi: ", error);
   }
-  ``
 };
 
 appStart();
