@@ -23,7 +23,7 @@ $api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return $api.request(originalRequest);
       } catch (err) {
-        console.error("Not authorized", err); // Xatoliklar uchun log qo'shildi
+        console.error("Not authorized", err);
       }
     }
     return Promise.reject(error);

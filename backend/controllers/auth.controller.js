@@ -22,6 +22,8 @@ class AuthController {
   static setCookie(res, token) {
     res.cookie("refreshToken", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS faqat ishlab chiqarish muhitida
+      sameSite: 'Lax', // Lax, bu keng tarqalgan xavfsizlik o'lchovidir
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 kun
     });
   }
@@ -30,7 +32,7 @@ class AuthController {
     try {
       const {email, password, userName} = req.body;
       const data = await AuthService.register(email, password, userName);
-      res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000})
+      AuthController.setCookie(res, data.refreshToken);
       return res.json(data);
     } catch (error) {
       next(error);
@@ -51,7 +53,7 @@ class AuthController {
     try {
       const {email, password} = req.body;
       const data = await AuthService.login(email, password);
-      res.cookie('refreshToken', data.refreshToken, {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000})
+      AuthController.setCookie(res, data.refreshToken);
       return res.json(data);
     } catch (error) {
       next(error);
@@ -75,10 +77,7 @@ class AuthController {
       if (!refreshToken) throw BaseError.UnauthorizedError("Refresh token not found");
 
       const data = await AuthService.refresh(refreshToken);
-      res.cookie("refreshToken", data.refreshToken, {
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 kun
-      });
+      AuthController.setCookie(res, data.refreshToken);
       return res.json(data);
     } catch (error) {
       next(error);

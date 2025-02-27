@@ -92,7 +92,7 @@ class FileService {
 
   async getFileView(bucketId, fileId) {
     try {
-      const {href} = await this.storage.getFileView(bucketId, fileId);
+      const {href} = this.storage.getFileView(bucketId, fileId);
       return href;
     } catch (error) {
       throw new Error("Faylni ko'rishda xatolik: " + error.message);
