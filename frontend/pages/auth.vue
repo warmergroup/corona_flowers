@@ -8,7 +8,7 @@ const router = useRouter();
 const isLoading = ref(false);
 
 onMounted(async () => {
-  if (sessionStorage.getItem('accessToken')) {
+  if (localStorage.getItem('accessToken')) {
     await router.push('/');
   } else {
     isLoading.value = true;

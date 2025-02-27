@@ -75,7 +75,6 @@ class AuthController {
     try {
       const {refreshToken} = req.cookies;
       if (!refreshToken) throw BaseError.UnauthorizedError("Refresh token not found");
-
       const data = await AuthService.refresh(refreshToken);
       AuthController.setCookie(res, data.refreshToken);
       return res.json(data);

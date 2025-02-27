@@ -10,8 +10,8 @@ const checkAuth = async () => {
   try {
     const { data } = await $axios.get('/auth/refresh');
     console.log('data: ', data)
-    // localStorage.setItem('accessToken', data.accessToken);
-    sessionStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('accessToken', data.accessToken);
+    // sessionStorage.setItem('accessToken', data.accessToken);
     authStore.setIsAuth(true);
     authStore.setUser(data.user);
   } catch (error: any) {
@@ -26,7 +26,7 @@ const checkAuth = async () => {
 };
 onMounted(() => {
 
-  if (sessionStorage.getItem("accessToken")) {
+  if (localStorage.getItem("accessToken")) {
     checkAuth();
   } else {
     authStore.setIsLoading(false);

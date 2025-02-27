@@ -33,8 +33,8 @@ const { mutate, isPending, error } = useMutation({
     try {
       authStore.setUser(data.user);
       authStore.setIsAuth(true);
-      sessionStorage.setItem('accessToken', data.accessToken);
-      // localStorage.setItem('accessToken', data.accessToken);
+      // sessionStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('accessToken', data.accessToken);
       router.push('/');
       toast.add({
         title: 'Xush kelibsiz',

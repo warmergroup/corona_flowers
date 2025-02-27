@@ -7,8 +7,8 @@ const $api = axios.create({
 });
 
 $api.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${sessionStorage.getItem('accessToken')}`;
-  // config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+  // config.headers.Authorization = `Bearer ${sessionStorage.getItem('accessToken')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
   return config;
 });
 
@@ -20,8 +20,8 @@ $api.interceptors.response.use(
       originalRequest._isRetry = true;
       try {
         const { data } = await $axios.get("/auth/refresh");
-        sessionStorage.setItem("accessToken", data.accessToken);
-        // localStorage.setItem("accessToken", data.accessToken);
+        // sessionStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("accessToken", data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return $api.request(originalRequest);
       } catch (err) {
