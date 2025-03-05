@@ -18,7 +18,7 @@
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
-    "nuxt": "^3.14.1592",
+    "nuxt": "^3.6.0",
     "pinia": "^2.3.0",
     "vue": "latest",
     "vue-router": "latest"

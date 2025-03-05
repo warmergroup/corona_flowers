@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAuthStore } from "~/store/auth.store";
+import {useAuthStore} from "~/store/auth.store";
 import $axios from "~/http";
 
 const authStore = useAuthStore()
@@ -8,10 +8,8 @@ const toast = useToast();
 const checkAuth = async () => {
   authStore.setIsLoading(true);
   try {
-    const { data } = await $axios.get('/auth/refresh');
-    console.log('data: ', data)
+    const {data} = await $axios.get('/auth/refresh');
     localStorage.setItem('accessToken', data.accessToken);
-    // sessionStorage.setItem('accessToken', data.accessToken);
     authStore.setIsAuth(true);
     authStore.setUser(data.user);
   } catch (error: any) {
@@ -25,7 +23,6 @@ const checkAuth = async () => {
   }
 };
 onMounted(() => {
-
   if (localStorage.getItem("accessToken")) {
     checkAuth();
   } else {
@@ -36,7 +33,7 @@ onMounted(() => {
 
 <template>
   <NuxtLayout>
-    <NuxtPage />
-    <UNotifications />
+    <NuxtPage/>
+    <UNotifications/>
   </NuxtLayout>
 </template>

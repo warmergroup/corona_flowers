@@ -1,7 +1,8 @@
 // query/useGetImagesQuery.ts
 import {useQuery} from '@tanstack/vue-query';
 import {useImageStore} from '~/store/image.store';
-import $axios from '~/http';
+import $axios from "~/http";
+
 
 export const useGetImagesQuery = (currentPage: any, itemsPerPage: number, totalItems: any) => {
   const imageStore = useImageStore();

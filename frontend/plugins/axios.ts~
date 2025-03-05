@@ -1,0 +1,15 @@
+// plugins/axios.ts
+import axios from 'axios';
+import { defineNuxtPlugin, useRuntimeConfig } from '#app';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
+
+  const $axios = axios.create({
+    withCredentials: true,
+    baseURL: `${config.public.API_URL}/api`,
+  });
+
+  // axios ni global pluginga qo'shamiz
+  nuxtApp.provide('axios', $axios);
+});

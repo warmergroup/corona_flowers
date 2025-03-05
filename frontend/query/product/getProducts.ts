@@ -1,6 +1,7 @@
 import {useQuery} from '@tanstack/vue-query';
 import {useProductStore} from '~/store/product.store';
-import $axios from '~/http';
+import $axios from "~/http";
+
 
 export const useGetProductsQuery = () => {
   const productStore = useProductStore();

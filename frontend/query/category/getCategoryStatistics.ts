@@ -1,5 +1,6 @@
 import {useQuery} from '@tanstack/vue-query';
-import $axios from '~/http';
+import $axios from "~/http";
+
 
 export const useGetCategoryStatistics = () => {
   return useQuery({

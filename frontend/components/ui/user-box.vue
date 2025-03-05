@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/store/auth.store";
 import $axios from "~/http";
+
 import type {IUser} from '~/interfaces';
 
 const authStore = useAuthStore();

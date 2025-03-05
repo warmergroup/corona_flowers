@@ -6,7 +6,7 @@ import {useConfirm} from "~/hooks/use-confirm";
 import type {IProductState} from "~/interfaces";
 import type {FormSubmitEvent} from "#ui/types";
 import {useMutation} from "@tanstack/vue-query";
-import $api from "~/http/api";
+import $api from '~/http/api';
 import {extractErrorMessage} from "~/utils/formUtils";
 
 const confirm = useConfirm();

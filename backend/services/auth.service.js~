@@ -22,7 +22,7 @@ class AuthService {
     });
     const userDto = new UserDto(user);
 
-    const tokens = TokenService.generateToken({...userDto});
+    const tokens = await TokenService.generateToken({...userDto});
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return {user: userDto, ...tokens};
@@ -43,7 +43,7 @@ class AuthService {
     if (!isPassword) throw BaseError.BadRequestError("Parol xato");
 
     const userDto = new UserDto(user);
-    const tokens = TokenService.generateToken({...userDto});
+    const tokens = await TokenService.generateToken({...userDto});
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return {user: userDto, ...tokens};
@@ -68,14 +68,14 @@ class AuthService {
     }
 
     const userDto = new UserDto(user);
-    const tokens =  TokenService.generateToken({...userDto});
+    const tokens = await TokenService.generateToken({...userDto});
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return {user: userDto, ...tokens};
   }
 
   async getUser() {
-    return UserModel.find();
+    return await UserModel.find();
   }
 
   async forgotPassword(email) {

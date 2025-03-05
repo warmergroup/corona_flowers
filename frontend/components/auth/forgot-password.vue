@@ -4,6 +4,7 @@ import {useAuth} from "~/hooks/use-auth";
 import {useMutation} from "@tanstack/vue-query";
 import {useAuthStore} from "~/store/auth.store";
 import $axios from "~/http";
+
 import {validateEmail, extractErrorMessage} from "~/utils/formUtils";
 
 const auth = useAuth();

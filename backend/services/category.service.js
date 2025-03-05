@@ -11,7 +11,7 @@ class CategoryService {
   async createCategory(category) {
     const existCategory = await CategoryModel.findOne({categoryName: category.categoryName});
     if (existCategory) throw BaseError.BadRequestError(`Ushbu katalog allaqachon yaratilgan`);
-    return await CategoryModel.create(category);
+    return CategoryModel.create(category);
   }
 
   async deleteCategory(id) {
@@ -24,7 +24,7 @@ class CategoryService {
     if (!existingCategory) throw BaseError.BadRequestError('Katalog topilmadi!');
     const isCategoryexist = await CategoryModel.findOne({categoryName: category.categoryName});
     if (isCategoryexist) throw BaseError.BadRequestError(`Ushbu katalog allaqachon mavjud`);
-    return await CategoryModel.findByIdAndUpdate(id, category, {new: true});
+    return CategoryModel.findByIdAndUpdate(id, category, {new: true});
   }
 }
 

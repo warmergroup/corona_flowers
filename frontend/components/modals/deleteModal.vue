@@ -2,7 +2,7 @@
 import {useConfirm} from '~/hooks/use-confirm';
 import {useMutation} from '@tanstack/vue-query';
 import {extractErrorMessage} from '~/utils/formUtils';
-import $api from "~/http/api";
+import $api from '~/http/api';
 
 const props = defineProps({
   modalType: String,

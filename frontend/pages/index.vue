@@ -2,8 +2,9 @@
 import {useGetProductStatistics} from '~/query/product/getProductStatistics';
 import {useGetCategoryStatistics} from '~/query/category/getCategoryStatistics';
 import {useGetImageStatistics} from '~/query/images/getImagesStatistiks';
+import {useGetCategorysQuery} from "~/query/category/getCategorys";
 
-
+const {} = useGetCategorysQuery()
 useHead({title: 'Dashboard | Admin Panel'});
 
 const statistics = ref([

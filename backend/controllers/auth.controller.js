@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import BaseError from "../errors/base.error.js";
 import AuthService from "../services/auth.service.js";
-// import {validationResult} from "express-validator";
 
 const CLIENT_URL = process.env.CLIENT_URL;
 

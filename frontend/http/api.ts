@@ -7,7 +7,6 @@ const $api = axios.create({
 });
 
 $api.interceptors.request.use((config) => {
-  // config.headers.Authorization = `Bearer ${sessionStorage.getItem('accessToken')}`;
   config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
   return config;
 });
@@ -19,13 +18,12 @@ $api.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._isRetry) {
       originalRequest._isRetry = true;
       try {
-        const { data } = await $axios.get("/auth/refresh");
-        // sessionStorage.setItem("accessToken", data.accessToken);
+        const {data} = await $axios.get("/auth/refresh");
         localStorage.setItem("accessToken", data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return $api.request(originalRequest);
       } catch (err) {
-        console.error("Not authorized", err);
+        console.error("Not authorized", err); // Xatoliklar uchun log qo'shildi
       }
     }
     return Promise.reject(error);
