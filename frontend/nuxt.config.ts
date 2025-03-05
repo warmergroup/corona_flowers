@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   plugins: ["~/plugins/vue-query.ts"],
   runtimeConfig: {
     public: {
-      API_URL: process.env.NUXT_PUBLIC_API_URL || "http://localhost:8080",
+      API_URL: process.env.NUXT_PUBLIC_API_URL",
     },
   },
 });
